@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Quest: The Digital Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 900px;
+            width: 90%;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .title {
+            text-align: center;
+            color: #4c51bf;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .language-selector {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 2px solid #4c51bf;
+        }
+
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .lang-btn {
+            background: linear-gradient(45deg, #4c51bf, #667eea);
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 81, 191, 0.3);
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 81, 191, 0.4);
+        }
+
+        .lang-btn.selected {
+            background: linear-gradient(45deg, #10b981, #059669);
+            transform: scale(1.05);
+        }
+
+        .story-section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4c51bf;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .concept-box {
+            background: linear-gradient(45deg, #e0e7ff, #c7d2fe);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #4c51bf;
+        }
+
+        .concept-title {
+            font-weight: bold;
+            color: #4c51bf;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .code-example {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            font-size: 0.9em;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .language-badge {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .choices {
+            display: grid;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(45deg, #4c51bf, #667eea);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 81, 191, 0.3);
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 81, 191, 0.4);
+        }
+
+        .choice-btn:active {
+            transform: translateY(0);
+        }
+
+        .progress {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4c51bf, #10b981);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+
+        .interactive-demo {
+            background: #f3f4f6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid #d1d5db;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d1d5db;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        .demo-output {
+            background: #1f2937;
+            color: #10b981;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🚀 Code Quest</h1>
+        <p class="subtitle">Learn programming through epic adventures in your favorite language!</p>
+        
+        <div id="languageSelection" class="language-selector">
+            <h3 style="color: #4c51bf; margin-bottom: 15px;">Choose Your Programming Language</h3>
+            <p>Select the language you want to learn or practice with:</p>
+            <div class="lang-grid">
+                <button class="lang-btn" onclick="selectLanguage('javascript')">
+                    <div>🌐 JavaScript</div>
+                    <small>Web Development</small>
+                </button>
+                <button class="lang-btn" onclick="selectLanguage('python')">
+                    <div>🐍 Python</div>
+                    <small>Data Science & AI</small>
+                </button>
+                <button class="lang-btn" onclick="selectLanguage('java')">
+                    <div>☕ Java</div>
+                    <small>Enterprise Apps</small>
+                </button>
+                <button class="lang-btn" onclick="selectLanguage('cpp')">
+                    <div>⚡ C++</div>
+                    <small>System Programming</small>
+                </button>
+                <button class="lang-btn" onclick="selectLanguage('csharp')">
+                    <div>🎯 C#</div>
+                    <small>Microsoft Stack</small>
+                </button>
+                <button class="lang-btn" onclick="selectLanguage('swift')">
+                    <div>🍎 Swift</div>
+                    <small>iOS Development</small>
+                </button>
+            </div>
+        </div>
+
+        <div id="gameStats" class="stats hidden">
+            <span>Chapter: <span id="chapter">1</span>/5</span>
+            <span>Language: <span id="selectedLang">-</span></span>
+            <span>Concepts: <span id="concepts">0</span></span>
+        </div>
+        
+        <div id="gameProgress" class="progress hidden">
+            <div class="progress-bar" id="progressBar" style="width: 20%"></div>
+        </div>
+
+        <div id="gameContent">
+            <!-- Game content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        let currentChapter = 1;
+        let conceptsLearned = 0;
+        let selectedLanguage = null;
+        let gameState = {};
+
+        const languageData = {
+            javascript: {
+                name: "JavaScript",
+                extension: ".js",
+                color: "#f7df1e",
+                greeting: "console.log('Hello, World!');",
+                comment: "//",
+                printFunction: "console.log"
+            },
+            python: {
+                name: "Python",
+                extension: ".py",
+                color: "#3776ab",
+                greeting: "print('Hello, World!')",
+                comment: "#",
+                printFunction: "print"
+            },
+            java: {
+                name: "Java",
+                extension: ".java",
+                color: "#ed8b00",
+                greeting: "System.out.println(\"Hello, World!\");",
+                comment: "//",
+                printFunction: "System.out.println"
+            },
+            cpp: {
+                name: "C++",
+                extension: ".cpp",
+                color: "#00599c",
+                greeting: "cout << \"Hello, World!\" << endl;",
+                comment: "//",
+                printFunction: "cout"
+            },
+            csharp: {
+                name: "C#",
+                extension: ".cs",
+                color: "#239120",
+                greeting: "Console.WriteLine(\"Hello, World!\");",
+                comment: "//",
+                printFunction: "Console.WriteLine"
+            },
+            swift: {
+                name: "Swift",
+                extension: ".swift",
+                color: "#fa7343",
+                greeting: "print(\"Hello, World!\")",
+                comment: "//",
+                printFunction: "print"
+            }
+        };
+
+        const chapters = {
+            1: {
+                title: "The Mysterious Variable Kingdom",
+                story: "Welcome, brave adventurer! You've stumbled upon the Variable Kingdom, where magical containers hold different treasures. The wise King Variable needs your help to organize his treasury.",
+                concept: "Variables",
+                explanation: "Variables are like labeled boxes that store information. Just like a treasure chest with a name tag!",
+                codeExamples: {
+                    javascript: `let treasureChest = "Golden Coins";
+let dragonAge = 150;
+let isAwake = true;
+
+console.log("The chest contains: " + treasureChest);`,
+                    python: `treasure_chest = "Golden Coins"
+dragon_age = 150
+is_awake = True
+
+print("The chest contains: " + treasure_chest)`,
+                    java: `String treasureChest = "Golden Coins";
+int dragonAge = 150;
+boolean isAwake = true;
+
+System.out.println("The chest contains: " + treasureChest);`,
+                    cpp: `string treasureChest = "Golden Coins";
+int dragonAge = 150;
+bool isAwake = true;
+
+cout << "The chest contains: " << treasureChest << endl;`,
+                    csharp: `string treasureChest = "Golden Coins";
+int dragonAge = 150;
+bool isAwake = true;
+
+Console.WriteLine("The chest contains: " + treasureChest);`,
+                    swift: `let treasureChest = "Golden Coins"
+let dragonAge = 150
+let isAwake = true
+
+print("The chest contains: \\(treasureChest)")`
+                },
+                question: "The king wants to store the number of dragons in his kingdom. What's the best way to do this?",
+                choices: [
+                    { text: "Create a variable called 'dragonCount' and set it to 5", correct: true, explanation: "Perfect! Variables with descriptive names make code easy to understand." },
+                    { text: "Just write the number 5 everywhere it's needed", correct: false, explanation: "This works, but if the number changes, you'd have to update it everywhere!" },
+                    { text: "Use a variable called 'x' and set it to 5", correct: false, explanation: "This works technically, but 'dragonCount' is much clearer than 'x'." }
+                ],
+                interactive: true
+            },
+            2: {
+                title: "The Looping Labyrinth",
+                story: "Your journey continues to the Looping Labyrinth! Here, a friendly robot guard repeats the same task over and over. 'I wish there was an easier way!' he sighs, polishing the same 100 doors every day.",
+                concept: "Loops",
+                explanation: "Loops let us repeat actions without writing the same code multiple times. Perfect for repetitive tasks!",
+                codeExamples: {
+                    javascript: `for (let door = 1; door <= 100; door++) {
+    console.log("Polishing door " + door);
+}
+
+// Or using while loop
+let door = 1;
+while (door <= 100) {
+    console.log("Polishing door " + door);
+    door++;
+}`,
+                    python: `for door in range(1, 101):
+    print(f"Polishing door {door}")
+
+# Or using while loop
+door = 1
+while door <= 100:
+    print(f"Polishing door {door}")
+    door += 1`,
+                    java: `for (int door = 1; door <= 100; door++) {
+    System.out.println("Polishing door " + door);
+}
+
+// Or using while loop
+int door = 1;
+while (door <= 100) {
+    System.out.println("Polishing door " + door);
+    door++;
+}`,
+                    cpp: `for (int door = 1; door <= 100; door++) {
+    cout << "Polishing door " << door << endl;
+}
+
+// Or using while loop
+int door = 1;
+while (door <= 100) {
+    cout << "Polishing door " << door << endl;
+    door++;
+}`,
+                    csharp: `for (int door = 1; door <= 100; door++) {
+    Console.WriteLine("Polishing door " + door);
+}
+
+// Or using while loop
+int door = 1;
+while (door <= 100) {
+    Console.WriteLine("Polishing door " + door);
+    door++;
+}`,
+                    swift: `for door in 1...100 {
+    print("Polishing door \\(door)")
+}
+
+// Or using while loop
+var door = 1
+while door <= 100 {
+    print("Polishing door \\(door)")
+    door += 1
+}`
+                },
+                question: "How can you help the robot polish all 100 doors efficiently?",
+                choices: [
+                    { text: "Write 'polish door' code 100 separate times", correct: false, explanation: "That would work but imagine if there were 1000 doors!" },
+                    { text: "Use a for loop to repeat the polishing action", correct: true, explanation: "Excellent! Loops save time and make code much shorter." },
+                    { text: "Tell the robot to work faster", correct: false, explanation: "Haha! While motivating, this doesn't solve the coding problem." }
+                ]
+            },
+            3: {
+                title: "The Function Forest",
+                story: "Deep in the Function Forest, you meet a wise wizard who has special spells (functions) for different tasks. 'Instead of casting the same long spell repeatedly,' he explains, 'I create shortcuts!'",
+                concept: "Functions",
+                explanation: "Functions are reusable blocks of code that perform specific tasks. Like having a magic spell you can cast anytime!",
+                codeExamples: {
+                    javascript: `function castFireball(target) {
+    console.log("🔥 Casting fireball at " + target);
+    return "Hit!";
+}
+
+let result = castFireball("Dragon");
+console.log(result); // Output: "Hit!"`,
+                    python: `def cast_fireball(target):
+    print(f"🔥 Casting fireball at {target}")
+    return "Hit!"
+
+result = cast_fireball("Dragon")
+print(result)  # Output: "Hit!"`,
+                    java: `public static String castFireball(String target) {
+    System.out.println("🔥 Casting fireball at " + target);
+    return "Hit!";
+}
+
+String result = castFireball("Dragon");
+System.out.println(result); // Output: "Hit!"`,
+                    cpp: `string castFireball(string target) {
+    cout << "🔥 Casting fireball at " << target << endl;
+    return "Hit!";
+}
+
+string result = castFireball("Dragon");
+cout << result << endl; // Output: "Hit!"`,
+                    csharp: `public static string CastFireball(string target) {
+    Console.WriteLine("🔥 Casting fireball at " + target);
+    return "Hit!";
+}
+
+string result = CastFireball("Dragon");
+Console.WriteLine(result); // Output: "Hit!"`,
+                    swift: `func castFireball(target: String) -> String {
+    print("🔥 Casting fireball at \\(target)")
+    return "Hit!"
+}
+
+let result = castFireball(target: "Dragon")
+print(result) // Output: "Hit!"`
+                },
+                question: "The wizard wants to create a function to heal adventurers. What's the best approach?",
+                choices: [
+                    { text: "function heal() { console.log('You are healed!'); }", correct: false, explanation: "Good start! But it would be better to specify who gets healed." },
+                    { text: "Create a function that takes the adventurer's name as input", correct: true, explanation: "Perfect! This function can heal any adventurer by name." },
+                    { text: "Just write the healing code each time it's needed", correct: false, explanation: "This creates repetitive code. Functions help avoid this!" }
+                ]
+            },
+            4: {
+                title: "The Conditional Crossroads",
+                story: "You arrive at the Conditional Crossroads, where a mystical gate blocks your path. 'Answer correctly,' speaks a voice, 'and the path shall open. But choose wisely - different answers lead to different outcomes!'",
+                concept: "If/Else Statements",
+                explanation: "Conditional statements let programs make decisions based on different situations, just like choosing different paths!",
+                codeExamples: {
+                    javascript: `let hasKey = true;
+let hasPassword = "magic123";
+
+if (hasKey && hasPassword === "magic123") {
+    console.log("Welcome! Door opens!");
+} else if (hasKey) {
+    console.log("You have the key, but need the password!");
+} else {
+    console.log("You need both a key and password!");
+}`,
+                    python: `has_key = True
+password = "magic123"
+
+if has_key and password == "magic123":
+    print("Welcome! Door opens!")
+elif has_key:
+    print("You have the key, but need the password!")
+else:
+    print("You need both a key and password!")`,
+                    java: `boolean hasKey = true;
+String password = "magic123";
+
+if (hasKey && password.equals("magic123")) {
+    System.out.println("Welcome! Door opens!");
+} else if (hasKey) {
+    System.out.println("You have the key, but need the password!");
+} else {
+    System.out.println("You need both a key and password!");
+}`,
+                    cpp: `bool hasKey = true;
+string password = "magic123";
+
+if (hasKey && password == "magic123") {
+    cout << "Welcome! Door opens!" << endl;
+} else if (hasKey) {
+    cout << "You have the key, but need the password!" << endl;
+} else {
+    cout << "You need both a key and password!" << endl;
+}`,
+                    csharp: `bool hasKey = true;
+string password = "magic123";
+
+if (hasKey && password == "magic123") {
+    Console.WriteLine("Welcome! Door opens!");
+} else if (hasKey) {
+    Console.WriteLine("You have the key, but need the password!");
+} else {
+    Console.WriteLine("You need both a key and password!");
+}`,
+                    swift: `let hasKey = true
+let password = "magic123"
+
+if hasKey && password == "magic123" {
+    print("Welcome! Door opens!")
+} else if hasKey {
+    print("You have the key, but need the password!")
+} else {
+    print("You need both a key and password!")
+}`
+                },
+                question: "How should the mystical gate decide whether to let adventurers pass?",
+                choices: [
+                    { text: "Always let everyone through", correct: false, explanation: "That's not very mystical or secure!" },
+                    { text: "Use if/else statements to check multiple conditions", correct: true, explanation: "Brilliant! Conditional logic makes programs smart and interactive." },
+                    { text: "Randomly let some people through", correct: false, explanation: "While random can be fun, logical conditions are more useful for most programs." }
+                ]
+            },
+            5: {
+                title: "The Array Archipelago",
+                story: "Your final destination: the Array Archipelago! Here, Captain Data manages multiple treasure islands. 'I need to keep track of all my islands,' she says, 'but writing separate variables for each one is getting messy!'",
+                concept: "Arrays/Lists",
+                explanation: "Arrays (or lists) are like containers that can hold multiple values in order. Perfect for organizing related data!",
+                codeExamples: {
+                    javascript: `let treasureIslands = [
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+];
+
+console.log("First island: " + treasureIslands[0]);
+console.log("Total islands: " + treasureIslands.length);
+
+// Add a new island
+treasureIslands.push("Pearl Paradise");`,
+                    python: `treasure_islands = [
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+]
+
+print(f"First island: {treasure_islands[0]}")
+print(f"Total islands: {len(treasure_islands)}")
+
+# Add a new island
+treasure_islands.append("Pearl Paradise")`,
+                    java: `String[] treasureIslands = {
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+};
+
+System.out.println("First island: " + treasureIslands[0]);
+System.out.println("Total islands: " + treasureIslands.length);
+
+// For dynamic arrays, use ArrayList
+ArrayList<String> islandList = new ArrayList<>();
+islandList.add("Pearl Paradise");`,
+                    cpp: `vector<string> treasureIslands = {
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+};
+
+cout << "First island: " << treasureIslands[0] << endl;
+cout << "Total islands: " << treasureIslands.size() << endl;
+
+// Add a new island
+treasureIslands.push_back("Pearl Paradise");`,
+                    csharp: `string[] treasureIslands = {
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+};
+
+Console.WriteLine("First island: " + treasureIslands[0]);
+Console.WriteLine("Total islands: " + treasureIslands.Length);
+
+// For dynamic arrays, use List<T>
+List<string> islandList = new List<string>();
+islandList.Add("Pearl Paradise");`,
+                    swift: `var treasureIslands = [
+    "Ruby Island",
+    "Emerald Isle", 
+    "Diamond Cove",
+    "Sapphire Shores"
+]
+
+print("First island: \\(treasureIslands[0])")
+print("Total islands: \\(treasureIslands.count)")
+
+// Add a new island
+treasureIslands.append("Pearl Paradise")`
+                },
+                question: "How can Captain Data best organize her treasure islands?",
+                choices: [
+                    { text: "Create separate variables: island1, island2, island3...", correct: false, explanation: "This gets messy quickly. What if she discovers 100 islands?" },
+                    { text: "Use an array/list to store all island names together", correct: true, explanation: "Perfect! Arrays keep related data organized and easy to work with." },
+                    { text: "Write all island names in one long string", correct: false, explanation: "This makes it hard to work with individual islands later." }
+                ]
+            }
+        };
+
+        function selectLanguage(lang) {
+            selectedLanguage = lang;
+            document.getElementById('selectedLang').textContent = languageData[lang].name;
+            
+            // Update button styles
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.lang-btn').classList.add('selected');
+            
+            // Show game interface
+            setTimeout(() => {
+                document.getElementById('languageSelection').classList.add('hidden');
+                document.getElementById('gameStats').classList.remove('hidden');
+                document.getElementById('gameProgress').classList.remove('hidden');
+                displayChapter(1);
+            }, 500);
+        }
+
+        function displayChapter(chapterNum) {
+            const chapter = chapters[chapterNum];
+            const content = document.getElementById('gameContent');
+            const lang = languageData[selectedLanguage];
+            
+            let interactiveSection = '';
+            if (chapter.interactive && chapterNum === 1) {
+                interactiveSection = `
+                    <div class="interactive-demo">
+                        <h4 style="color: #4c51bf; margin-bottom: 10px;">🎮 Try it yourself!</h4>
+                        <p>Create a variable to store your adventurer's name:</p>
+                        <input type="text" class="demo-input" id="nameInput" placeholder="Enter your name..." onkeyup="updateDemo()">
+                        <div class="demo-output" id="demoOutput">// Your code will appear here</div>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = `
+                <div class="story-section">
+                    <h2 style="color: #4c51bf; margin-bottom: 15px;">${chapter.title}</h2>
+                    <div class="story-text">${chapter.story}</div>
+                    
+                    <div class="concept-box">
+                        <div class="concept-title">💡 Coding Concept: ${chapter.concept}</div>
+                        <div>${chapter.explanation}</div>
+                        <div class="code-example">
+                            <div class="language-badge">${lang.name}</div>
+                            ${chapter.codeExamples[selectedLanguage]}
+                        </div>
+                    </div>
+                    
+                    ${interactiveSection}
+                    
+                    <div class="story-text"><strong>Challenge:</strong> ${chapter.question}</div>
+                    
+                    <div class="choices">
+                        ${chapter.choices.map((choice, index) => 
+                            `<button class="choice-btn" onclick="makeChoice(${chapterNum}, ${index})">${choice.text}</button>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateDemo() {
+            const name = document.getElementById('nameInput').value;
+            const output = document.getElementById('demoOutput');
+            const lang = languageData[selectedLanguage];
+            
+            if (name) {
+                let code = '';
+                switch(selectedLanguage) {
+                    case 'javascript':
+                        code = `let adventurerName = "${name}";\nconsole.log("Hello, " + adventurerName + "!");`;
+                        break;
+                    case 'python':
+                        code = `adventurer_name = "${name}"\nprint(f"Hello, {adventurer_name}!")`;
+                        break;
+                    case 'java':
+                        code = `String adventurerName = "${name}";\nSystem.out.println("Hello, " + adventurerName + "!");`;
+                        break;
+                    case 'cpp':
+                        code = `string adventurerName = "${name}";\ncout << "Hello, " << adventurerName << "!" << endl;`;
+                        break;
+                    case 'csharp':
+                        code = `string adventurerName = "${name}";\nConsole.WriteLine("Hello, " + adventurerName + "!");`;
+                        break;
+                    case 'swift':
+                        code = `let adventurerName = "${name}"\nprint("Hello, \\(adventurerName)!")`;
+                        break;
+                }
+                output.innerHTML = code;
+            } else {
+                output.innerHTML = '// Type your name above to see the magic! ✨';
+            }
+        }
+
+        function makeChoice(chapterNum, choiceIndex) {
+            const chapter = chapters[chapterNum];
+            const choice = chapter.choices[choiceIndex];
+            const content = document.getElementById('gameContent');
+            
+            const resultColor = choice.correct ? '#10b981' : '#f59e0b';
+            const resultEmoji = choice.correct ? '✅' : '🤔';
+            
+            if (choice.correct) {
+                conceptsLearned++;
+                document.getElementById('concepts').textContent = conceptsLearned;
+            }
+            
+            content.innerHTML += `
+                <div style="background: ${resultColor}; color: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <h3>${resultEmoji} ${choice.correct ? 'Excellent Choice!' : 'Good Try!'}</h3>
+                    <p>${choice.explanation}</p>
+                    <button class="choice-btn" onclick="nextChapter()" style="background: rgba(255,255,255,0.2); margin-top: 15px;">
+                        ${chapterNum === 5 ? 'Complete Quest!' : 'Continue Adventure →'}
+                    </button>
+                </div>
+            `;
+        }
+
+        function nextChapter() {
+            if (currentChapter === 5) {
+                showCompletion();
+                return;
+            }
+            
+            currentChapter++;
+            document.getElementById('chapter').textContent = currentChapter;
+            document.getElementById('progressBar').style.width = (currentChapter * 20) + '%';
+            displayChapter(currentChapter);
+        }
+
+        function showCompletion() {
+            const content = document.getElementById('gameContent');
+            const lang = languageData[selectedLanguage];
+            content.innerHTML = `
+                <div class="celebration">
+                    <h2>🎉 Quest Complete! 🎉</h2>
+                    <p>Congratulations, brave ${lang.name} coder! You've mastered the fundamental concepts:</p>
+                    <ul style="text-align: left; margin: 20px 0; display: inline-block;">
+                        <li>Variables - Storing data in ${lang.name}</li>
+                        <li>Loops - Repeating actions efficiently</li>
+                        <li>Functions - Creating reusable code blocks</li>
+                        <li>Conditionals - Making smart decisions</li>
+                        <li>Arrays/Lists - Organizing collections of data</li>
+                    </ul>
+                    <p>You learned ${conceptsLearned} out of 5 concepts correctly!</p>
+                    <p>Now you're ready to build amazing things with ${lang.name}! 🚀</p>
+                    <button class="restart-btn" onclick="restartGame()">Start New Adventure</button>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            currentChapter = 1;
+            conceptsLearned = 0;
+            selectedLanguage = null;
+            document.getElementById('chapter').textContent = 1;
+            document.getElementById('concepts').textContent = 0;
+            document.getElementById('selectedLang').textContent = '-';
+            document.getElementById('progressBar').style.width = '20%';
+            document.getElementById('languageSelection').classList.remove('hidden');
+            document.getElementById('gameStats').classList.add('hidden');
+            document.getElementById('gameProgress').classList.add('hidden');
+            document.getElementById('gameContent').innerHTML = '';
+            
+            // Reset language selection buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('selected'));
+        }
+    </script>
+</body>
+</html>
