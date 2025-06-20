@@ -1,6 +1,7 @@
 # Code Quest: The Digital Adventure
 
-Welcome to **Code Quest: The Digital Adventure**! This is an interactive, browser-based game designed to teach fundamental programming concepts through a fun, story-driven adventure.
+## Project Overview
+**Code Quest: The Digital Adventure** is an interactive, browser-based educational game designed to teach fundamental programming concepts to beginners of all ages. Through a fun, story-driven adventure, players learn about variables, loops, functions, conditionals, and arrays by making choices and solving coding challenges. The project aims to make learning programming approachable, engaging, and memorable for students, self-learners, and anyone curious about coding.
 
 ## Features
 - Five engaging chapters, each introducing a core programming concept:
@@ -13,11 +14,19 @@ Welcome to **Code Quest: The Digital Adventure**! This is an interactive, browse
 - Progress tracking and a celebratory completion screen
 - Beautiful, modern UI
 
-## How to Run
+## Live Repository
+You can find the latest code and contribute on GitHub:
+[https://github.com/eatyndale/code-quest-html](https://github.com/eatyndale/code-quest-html)
+
+## How to Run Locally
 
 1. **Clone or download this repository.**
+   ```bash
+   git clone https://github.com/eatyndale/code-quest-html.git
+   cd code-quest-html
+   ```
 2. Make sure you have Python 3 installed (for the simple web server).
-3. Open a terminal in the project directory and run:
+3. Start a local server:
    ```bash
    python3 -m http.server
    ```
@@ -33,6 +42,9 @@ Welcome to **Code Quest: The Digital Adventure**! This is an interactive, browse
 - Choose the best answer to the coding challenge.
 - Get instant feedback and continue your adventure!
 - At the end, see how many concepts you mastered and start a new adventure if you wish.
+
+## Contributing
+Contributions are welcome! Feel free to fork the repository, make changes, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## License
 This project is for educational purposes. Feel free to use, modify, and share! 
